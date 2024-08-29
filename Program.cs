@@ -28,7 +28,7 @@ class AzureBlobStorageExample
         BlobContainerClient containerClient = await CreateBlobContainerAsync();
         await ReadContainerPropertiesAsync(containerClient);
         await AddContainerMetadataAsync(containerClient);
-        await ReadContainerMetadataAsync(containerClient);  // New method call added here
+        await ReadContainerMetadataAsync(containerClient);
         string localFilePath = await UploadFileToBlobAsync(containerClient);
         await ListBlobsAsync(containerClient);
         await DownloadBlobAsync(containerClient, localFilePath);
@@ -91,7 +91,6 @@ class AzureBlobStorageExample
         {
             var properties = await container.GetPropertiesAsync();
 
-            // Enumerate the container's metadata.
             Console.WriteLine("Container metadata:");
             foreach (var metadataItem in properties.Value.Metadata)
             {
