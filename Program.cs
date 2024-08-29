@@ -1,13 +1,20 @@
 ﻿using Azure;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using Microsoft.Extensions.Configuration;
 
 class AzureBlobStorageExample
 {
-    private const string StorageConnectionString = "YourAzureStorageConnectionString";
+    private static string? StorageConnectionString;
 
     static void Main()
     {
+        var configuration = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+            .AddUserSecrets<AzureBlobStorageExample>()
+            .Build();
+
+        StorageConnectionString = configuration["StorageConnectionString"];
         Console.WriteLine("Azure Blob Storage exercise\n");
 
         ProcessAsync().GetAwaiter().GetResult();

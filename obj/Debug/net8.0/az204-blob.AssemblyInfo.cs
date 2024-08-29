@@ -10,10 +10,11 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("2e7c00b5-35ba-4bc8-ba16-b30d8b44fa45")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("az204-blob")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3c324aaabd69393e99ba525236ba5dceaeb21717")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9386bcfbbd664a9a3f8f37a70a898283c9daa4d7")]
 [assembly: System.Reflection.AssemblyProductAttribute("az204-blob")]
 [assembly: System.Reflection.AssemblyTitleAttribute("az204-blob")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

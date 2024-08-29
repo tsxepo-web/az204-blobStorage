@@ -21,3 +21,13 @@
 /home/tsxepo/myApps/dotnet-apps/az204-blob/bin/Debug/net8.0/System.Memory.Data.dll
 /home/tsxepo/myApps/dotnet-apps/az204-blob/obj/Debug/net8.0/az204-blob.csproj.AssemblyReference.cache
 /home/tsxepo/myApps/dotnet-apps/az204-blob/obj/Debug/net8.0/az204-blob.csproj.CopyComplete
+/home/tsxepo/myApps/dotnet-apps/az204-blob/bin/Debug/net8.0/Microsoft.Extensions.Configuration.dll
+/home/tsxepo/myApps/dotnet-apps/az204-blob/bin/Debug/net8.0/Microsoft.Extensions.Configuration.Abstractions.dll
+/home/tsxepo/myApps/dotnet-apps/az204-blob/bin/Debug/net8.0/Microsoft.Extensions.Configuration.FileExtensions.dll
+/home/tsxepo/myApps/dotnet-apps/az204-blob/bin/Debug/net8.0/Microsoft.Extensions.Configuration.Json.dll
+/home/tsxepo/myApps/dotnet-apps/az204-blob/bin/Debug/net8.0/Microsoft.Extensions.Configuration.UserSecrets.dll
+/home/tsxepo/myApps/dotnet-apps/az204-blob/bin/Debug/net8.0/Microsoft.Extensions.FileProviders.Abstractions.dll
+/home/tsxepo/myApps/dotnet-apps/az204-blob/bin/Debug/net8.0/Microsoft.Extensions.FileProviders.Physical.dll
+/home/tsxepo/myApps/dotnet-apps/az204-blob/bin/Debug/net8.0/Microsoft.Extensions.FileSystemGlobbing.dll
+/home/tsxepo/myApps/dotnet-apps/az204-blob/bin/Debug/net8.0/Microsoft.Extensions.Primitives.dll
+/home/tsxepo/myApps/dotnet-apps/az204-blob/obj/Debug/net8.0/az204-blob.sourcelink.json
