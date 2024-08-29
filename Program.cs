@@ -1,4 +1,5 @@
-﻿using Azure.Storage.Blobs;
+﻿using Azure;
+using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 
 class AzureBlobStorageExample
@@ -17,14 +18,17 @@ class AzureBlobStorageExample
 
     private static async Task ProcessAsync()
     {
-        string containerName = await CreateBlobContainerAsync();
-        string localFilePath = await UploadFileToBlobAsync(containerName);
-        await ListBlobsAsync(containerName);
-        await DownloadBlobAsync(containerName, localFilePath);
-        await CleanupAsync(containerName, localFilePath);
+        BlobContainerClient containerClient = await CreateBlobContainerAsync();
+        await ReadContainerPropertiesAsync(containerClient);
+        await AddContainerMetadataAsync(containerClient);
+        await ReadContainerMetadataAsync(containerClient);  // New method call added here
+        string localFilePath = await UploadFileToBlobAsync(containerClient);
+        await ListBlobsAsync(containerClient);
+        await DownloadBlobAsync(containerClient, localFilePath);
+        await CleanupAsync(containerClient, localFilePath);
     }
 
-    private static async Task<string> CreateBlobContainerAsync()
+    private static async Task<BlobContainerClient> CreateBlobContainerAsync()
     {
         BlobServiceClient blobServiceClient = new BlobServiceClient(StorageConnectionString);
         string containerName = "wtblob" + Guid.NewGuid();
@@ -33,10 +37,70 @@ class AzureBlobStorageExample
         Console.WriteLine($"A container named '{containerName}' has been created.\nVerify it in the portal.");
         PromptToContinue();
 
-        return containerName;
+        return containerClient;
     }
 
-    private static async Task<string> UploadFileToBlobAsync(string containerName)
+    private static async Task ReadContainerPropertiesAsync(BlobContainerClient container)
+    {
+        try
+        {
+            var properties = await container.GetPropertiesAsync();
+            Console.WriteLine($"Properties for container {container.Uri}");
+            Console.WriteLine($"Public access level: {properties.Value.PublicAccess}");
+            Console.WriteLine($"Last modified time in UTC: {properties.Value.LastModified}");
+        }
+        catch (RequestFailedException e)
+        {
+            Console.WriteLine($"HTTP error code {e.Status}: {e.ErrorCode}");
+            Console.WriteLine(e.Message);
+            Console.ReadLine();
+        }
+    }
+
+    private static async Task AddContainerMetadataAsync(BlobContainerClient container)
+    {
+        try
+        {
+            IDictionary<string, string> metadata = new Dictionary<string, string>
+            {
+                { "docType", "textDocuments" },
+                { "category", "guidance" }
+            };
+
+            await container.SetMetadataAsync(metadata);
+            Console.WriteLine($"Metadata added to container {container.Uri}");
+        }
+        catch (RequestFailedException e)
+        {
+            Console.WriteLine($"HTTP error code {e.Status}: {e.ErrorCode}");
+            Console.WriteLine(e.Message);
+            Console.ReadLine();
+        }
+    }
+
+    private static async Task ReadContainerMetadataAsync(BlobContainerClient container)
+    {
+        try
+        {
+            var properties = await container.GetPropertiesAsync();
+
+            // Enumerate the container's metadata.
+            Console.WriteLine("Container metadata:");
+            foreach (var metadataItem in properties.Value.Metadata)
+            {
+                Console.WriteLine($"\tKey: {metadataItem.Key}");
+                Console.WriteLine($"\tValue: {metadataItem.Value}");
+            }
+        }
+        catch (RequestFailedException e)
+        {
+            Console.WriteLine($"HTTP error code {e.Status}: {e.ErrorCode}");
+            Console.WriteLine(e.Message);
+            Console.ReadLine();
+        }
+    }
+
+    private static async Task<string> UploadFileToBlobAsync(BlobContainerClient containerClient)
     {
         string localPath = "./data/";
         string fileName = "wtfile" + Guid.NewGuid() + ".txt";
@@ -44,7 +108,6 @@ class AzureBlobStorageExample
 
         await File.WriteAllTextAsync(localFilePath, "Hello, World!");
 
-        BlobContainerClient containerClient = new BlobServiceClient(StorageConnectionString).GetBlobContainerClient(containerName);
         BlobClient blobClient = containerClient.GetBlobClient(fileName);
 
         Console.WriteLine($"Uploading to Blob Storage as blob:\n\t {blobClient.Uri}\n");
@@ -60,10 +123,8 @@ class AzureBlobStorageExample
         return localFilePath;
     }
 
-    private static async Task ListBlobsAsync(string containerName)
+    private static async Task ListBlobsAsync(BlobContainerClient containerClient)
     {
-        BlobContainerClient containerClient = new BlobServiceClient(StorageConnectionString).GetBlobContainerClient(containerName);
-
         Console.WriteLine("Listing the blobs...");
         await foreach (BlobItem blobItem in containerClient.GetBlobsAsync())
         {
@@ -74,11 +135,10 @@ class AzureBlobStorageExample
         PromptToContinue();
     }
 
-    private static async Task DownloadBlobAsync(string containerName, string localFilePath)
+    private static async Task DownloadBlobAsync(BlobContainerClient containerClient, string localFilePath)
     {
         string downloadFilePath = localFilePath.Replace(".txt", "DOWNLOADED.txt");
 
-        BlobContainerClient containerClient = new BlobServiceClient(StorageConnectionString).GetBlobContainerClient(containerName);
         BlobClient blobClient = containerClient.GetBlobClient(Path.GetFileName(localFilePath));
 
         Console.WriteLine($"\nDownloading blob to\n\t{downloadFilePath}\n");
@@ -94,10 +154,8 @@ class AzureBlobStorageExample
         PromptToContinue();
     }
 
-    private static async Task CleanupAsync(string containerName, string localFilePath)
+    private static async Task CleanupAsync(BlobContainerClient containerClient, string localFilePath)
     {
-        BlobContainerClient containerClient = new BlobServiceClient(StorageConnectionString).GetBlobContainerClient(containerName);
-
         Console.WriteLine("\n\nDeleting blob container...");
         await containerClient.DeleteAsync();
 
